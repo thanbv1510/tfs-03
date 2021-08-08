@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="main.js"></script>
+    <title>Caculator</title>
+  </head>
+  <body>
+    <div class="app">
+        <input id="result" class="data-input brown-color" type="text" disabled />
+      <table class="calc-table">
+        <tr>
+          <td><input class="button-input" type="button" value="7" onclick="display(value)"/></td>
+          <td><input class="button-input" type="button" value="8" onclick="display(value)"/></td>
+          <td><input class="button-input" type="button" value="9" onclick="display(value)"/></td>
+          <td><input class="button-input" type="button" value="+" onclick="display(value)"/></td>
+          <td><input class="button-input" type="button" value="DEL" onclick="del()"/></td>
+        </tr>
+        <tr>
+            <td><input class="button-input" type="button" value="4" onclick="display(value)"/></td>
+            <td><input class="button-input" type="button" value="5" onclick="display(value)"/></td>
+            <td><input class="button-input" type="button" value="6" onclick="display(value)"/></td>
+            <td><input class="button-input" type="button" value="-" onclick="display(value)"/></td>
+            <td><input class="button-input" type="button" value="AC" onclick="reset(value)" /></td>
+        </tr>
+        <tr>
+            <td><input class="button-input" type="button" value="1" onclick="display(value)"/></td>
+            <td><input class="button-input" type="button" value="2" onclick="display(value)"/></td>
+            <td><input class="button-input" type="button" value="3" onclick="display(value)"/></td>
+            <td><input class="button-input" type="button" value="*" onclick="display(value)"/></td>
+            <td><input class="button-input" type="button" /></td>
+        </tr>
+        <tr>
+            <td><input class="button-input" type="button" value="0" onclick="display(value)"/></td>
+            <td><input class="button-input" type="button" value="." /></td>
+            <td><input class="button-input" type="button" value="/" onclick="display(value)"/></td>
+            <td><input class="button-input brown-color" type="button" value="="onclick="calc()"/></td>
+            <td><input class="button-input" type="button" /></td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>
