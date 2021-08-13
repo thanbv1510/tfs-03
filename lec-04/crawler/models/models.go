@@ -1,12 +1,5 @@
 package models
 
-type MovieInfo struct {
-	Name     string
-	UrlMovie string
-	UrlImage string
-	Rating   string
-}
-
 type DBConfig struct {
 	Driver   string `mapstructure:"DB_DRIVER"`
 	Host     string `mapstructure:"DB_HOST"`
@@ -17,7 +10,6 @@ type DBConfig struct {
 }
 
 type MovieDetail struct {
-	Context         string          `json:"@context"`
 	Type            string          `json:"@type"`
 	Url             string          `json:"url"`
 	Name            string          `json:"name"`

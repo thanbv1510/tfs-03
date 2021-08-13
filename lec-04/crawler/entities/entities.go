@@ -7,25 +7,26 @@ import (
 type Movie struct {
 	gorm.Model
 
-	ID            uint `gorm:"column:id primaryKey"`
+	ID            uint `gorm:"AUTO_INCREMENT;column:id primaryKey;"`
+	Type          string
 	Url           string
 	Name          string
 	Image         string
 	Description   string
 	Keywords      string
 	DatePublished string
+	Genre         string
 
 	AggregateRating AggregateRating `gorm:"foreignKey:ID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	Actors          []Actor         `gorm:"many2many:movie_actor;"`
 	Director        []Director      `gorm:"many2many:movie_director;"`
 	Creator         []Creator       `gorm:"many2many:movie_creator;"`
-	Genre           []Genre         `gorm:"many2many:movie_genre;"`
 }
 
 type AggregateRating struct {
 	gorm.Model
 
-	ID          uint
+	ID          uint `gorm:"AUTO_INCREMENT"`
 	Type        string
 	RatingCount float64
 	BestRating  float64
@@ -36,7 +37,7 @@ type AggregateRating struct {
 type Actor struct {
 	gorm.Model
 
-	ID    uint
+	ID    uint `gorm:"AUTO_INCREMENT"`
 	Type  string
 	Url   string
 	Name  string
@@ -46,7 +47,7 @@ type Actor struct {
 type Director struct {
 	gorm.Model
 
-	ID    uint
+	ID    uint `gorm:"AUTO_INCREMENT"`
 	Type  string
 	Url   string
 	Name  string
@@ -56,17 +57,9 @@ type Director struct {
 type Creator struct {
 	gorm.Model
 
-	ID    uint
+	ID    uint `gorm:"AUTO_INCREMENT"`
 	Type  string
 	Url   string
 	Name  string
 	Movie []Movie `gorm:"many2many:movie_creator"`
-}
-
-type Genre struct {
-	gorm.Model
-
-	ID    uint
-	Genre string
-	Movie []Movie `gorm:"many2many:movie_genre"`
 }

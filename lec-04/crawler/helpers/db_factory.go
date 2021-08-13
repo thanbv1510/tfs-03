@@ -1,4 +1,4 @@
-package utils
+package helpers
 
 import (
 	"crawler/models"
@@ -7,6 +7,8 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
+
+var sugar = GetSugar()
 
 func LoadDBConfig() (models.DBConfig, error) {
 	viper.SetConfigName("config")
@@ -25,6 +27,7 @@ func LoadDBConfig() (models.DBConfig, error) {
 		return dBConfig, err
 	}
 
+	sugar.Infof("==> Get database config done: %s", dBConfig.String())
 	return dBConfig, nil
 }
 
@@ -44,5 +47,6 @@ func DBConn() (db *gorm.DB) {
 		panic(err.Error())
 	}
 
+	sugar.Infof("==> Connected databse: %s", dsn)
 	return db
 }

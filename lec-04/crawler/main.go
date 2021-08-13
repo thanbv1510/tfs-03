@@ -2,67 +2,47 @@ package main
 
 import (
 	"crawler/entities"
-	"crawler/models"
-	"crawler/utils"
-	"fmt"
+	"crawler/helpers"
+	"crawler/services"
 	"golang.org/x/net/html"
 	"os"
 	"strings"
 )
 
 func main() {
-	err := utils.DBConn().AutoMigrate(&entities.Movie{}, &entities.AggregateRating{}, &entities.Actor{}, &entities.Creator{}, &entities.Director{}, &entities.Genre{})
+	sugar := helpers.GetSugar()
+
+	// Auto create table
+	err := helpers.DBConn().AutoMigrate(&entities.Movie{}, &entities.AggregateRating{}, &entities.Actor{}, &entities.Creator{}, &entities.Director{})
 	if err != nil {
-		fmt.Println("Cannot create all table!")
+		sugar.Error("==> Cannot create table!")
 		panic(err)
 	}
 
 	link := "https://www.imdb.com/chart/top/?ref_=nv_mv_250"
-	data := utils.GetRawHTML(link)
-	/*data, err := ioutil.ReadFile("imdb.html")*/
+	data := services.GetRawHTML(link)
 
 	doc, err := html.Parse(strings.NewReader(data))
 	if err != nil {
-		fmt.Println(err.Error())
+		sugar.Error(err.Error())
 		os.Exit(1)
 	}
 
-	allElementData := utils.GetAllRawElementData([]string{}, doc)
-
-	rawDataChan := make(chan models.MovieInfo, 100)
-	doneChannel := make(chan bool)
-
-	go utils.PushToChannel(rawDataChan, allElementData)
-	for i := 0; i < 100; i++ {
-		go utils.SaveToDB(rawDataChan, doneChannel)
-	}
-
-	_, _ = <-doneChannel
-
-	/*data, _ := ioutil.ReadFile("batman.html")
-	doc, err := html.Parse(strings.NewReader(string(data)))
-	if err != nil {
-		fmt.Println(err.Error())
-		os.Exit(1)
-	}
-
-	allElementData := utils.GetAllRawElementDetails([]string{}, doc)
-
-	movieDetail := utils.GetData(allElementData[0])
-	fmt.Println(movieDetail)
-	aggregateRating := entities.AggregateRating{Type: movieDetail.AggregateRating.Type}
-	var directorEntity []*entities.Director
-	for _, v := range movieDetail.Directors {
-		directorEntity = append(directorEntity, &entities.Director{Name: v.Name})
-	}
-
-	moVieEntity := entities.Movie{Name: movieDetail.Name, AggregateRating: aggregateRating, Director: directorEntity}
-
-	if err != nil {
-		fmt.Println(err)
+	movieLinks := services.GetAllMovieLinks([]string{}, doc)
+	sugar.Infof("==> Find %d link movies", len(movieLinks))
+	if len(movieLinks) == 0 {
+		sugar.Info("==> EXIT :( ")
 		return
 	}
 
-	result := utils.DBConn().Create(&moVieEntity)
-	fmt.Println(result)*/
+	linkChan := make(chan string, 100)
+	movieChan := make(chan entities.Movie, 100)
+	doneChannel := make(chan bool)
+
+	go services.PushToChannel(linkChan, movieLinks)
+	go services.ProcessData(linkChan, movieChan)
+	go services.SaveMovie(movieChan, doneChannel)
+
+	_, _ = <-doneChannel
+	sugar.Infof("==> DONE :) ")
 }
