@@ -39,10 +39,10 @@ func main() {
 	linkChan := make(chan string)
 	go services.PushToChannel(linkChan, movieLinks)
 
-	numGoroutine := 20
+	numGoroutine := 10
 	var wg sync.WaitGroup
+	wg.Add(numGoroutine)
 	for i := 0; i < numGoroutine; i++ {
-		wg.Add(1)
 		go services.ProcessData(linkChan, &wg)
 	}
 	wg.Wait()

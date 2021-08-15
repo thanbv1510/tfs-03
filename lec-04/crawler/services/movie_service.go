@@ -56,7 +56,6 @@ func PushToChannel(linkChan chan string, links []string) {
 	for i := 0; i < len(links); i++ {
 		link := links[i]
 		if len(strings.TrimSpace(link)) != 0 {
-			sugar.Infof("==> [PUSH LINK] %s", link)
 			linkChan <- link
 		}
 	}
@@ -66,10 +65,14 @@ func PushToChannel(linkChan chan string, links []string) {
 
 func ProcessData(linkChan chan string, wg *sync.WaitGroup) {
 	defer wg.Done()
+
 	movies := make([]entities.Movie, 0)
 	for {
 		link, ok := <-linkChan
 		if !ok {
+			if len(movies) > 0 {
+				repositories.InsertBatchMovie(movies)
+			}
 			break
 		}
 
@@ -79,16 +82,12 @@ func ProcessData(linkChan chan string, wg *sync.WaitGroup) {
 			continue
 		}
 
-		sugar.Infof("==> [PROCESS MOVIE] %s", movie.String())
+		sugar.Infof("==> [PROCESS MOVIE LINK: %s] %s", link, movie.String())
 		movies = append(movies, movie)
 		if len(movies) == 10 {
 			repositories.InsertBatchMovie(movies)
 			movies = make([]entities.Movie, 0)
 		}
-	}
-
-	if len(movies) > 0 {
-		repositories.InsertBatchMovie(movies)
 	}
 }
 
