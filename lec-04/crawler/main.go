@@ -7,6 +7,7 @@ import (
 	"golang.org/x/net/html"
 	"os"
 	"strings"
+	"sync"
 )
 
 func main() {
@@ -35,14 +36,16 @@ func main() {
 		return
 	}
 
-	linkChan := make(chan string, 100)
-	movieChan := make(chan entities.Movie, 100)
-	doneChannel := make(chan bool)
-
+	linkChan := make(chan string)
 	go services.PushToChannel(linkChan, movieLinks)
-	go services.ProcessData(linkChan, movieChan)
-	go services.SaveMovie(movieChan, doneChannel)
 
-	_, _ = <-doneChannel
+	numGoroutine := 20
+	var wg sync.WaitGroup
+	for i := 0; i < numGoroutine; i++ {
+		wg.Add(1)
+		go services.ProcessData(linkChan, &wg)
+	}
+	wg.Wait()
+
 	sugar.Infof("==> DONE :) ")
 }

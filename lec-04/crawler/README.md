@@ -4,8 +4,8 @@
 - [ ] Connection pool
 - [x] **[Bug]** - Duplicate element data when insert
 - [x] Insert batch
-- [x] goroutine
-- [ ] multiple goroutine :)
+- [x] <del>goroutine</del>
+- [x] multiple goroutine :)
 - [x] Logging with zap
 - [x] reading info from config file
 - [x] Using GORM

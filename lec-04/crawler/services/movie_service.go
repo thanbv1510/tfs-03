@@ -14,6 +14,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+	"sync"
 )
 
 var sugar = helpers.GetSugar()
@@ -63,31 +64,9 @@ func PushToChannel(linkChan chan string, links []string) {
 	close(linkChan)
 }
 
-func SaveMovie(movieChan chan entities.Movie, doneChan chan bool) {
-	defer close(doneChan)
+func ProcessData(linkChan chan string, wg *sync.WaitGroup) {
+	defer wg.Done()
 	movies := make([]entities.Movie, 0)
-	for {
-		movie, ok := <-movieChan
-		if !ok {
-			if len(movies) > 0 {
-				repositories.InsertBatchMovie(movies)
-			}
-			sugar.Infof("==> [SAVE MOVIE] inserted %d element", len(movies))
-
-			break
-		}
-
-		movies = append(movies, movie)
-		if len(movies) == 20 {
-			sugar.Infof("==> [SAVE MOVIE] inserted %d element", len(movies))
-			repositories.InsertBatchMovie(movies)
-			movies = make([]entities.Movie, 0)
-		}
-	}
-}
-
-func ProcessData(linkChan chan string, movieChan chan entities.Movie) {
-	defer close(movieChan)
 	for {
 		link, ok := <-linkChan
 		if !ok {
@@ -101,7 +80,15 @@ func ProcessData(linkChan chan string, movieChan chan entities.Movie) {
 		}
 
 		sugar.Infof("==> [PROCESS MOVIE] %s", movie.String())
-		movieChan <- movie
+		movies = append(movies, movie)
+		if len(movies) == 10 {
+			repositories.InsertBatchMovie(movies)
+			movies = make([]entities.Movie, 0)
+		}
+	}
+
+	if len(movies) > 0 {
+		repositories.InsertBatchMovie(movies)
 	}
 }
 
@@ -119,8 +106,8 @@ func GetMovieEntity(link string) (entities.Movie, error) {
 
 		return movieDetail.MovieModel2MovieEntity(), nil
 	}
-	sugar.Debug("DATA ERR", allElementData)
-	return entities.Movie{}, errors.New("NOT VALID")
+	sugar.Errorf("DATA ERR with data: %s and link: %s", allElementData, link)
+	return entities.Movie{}, errors.New("CANNOT GET DATA")
 }
 
 func GetAllRawElementDetails(data []string, n *html.Node) []string {
