@@ -36,3 +36,8 @@ func SaveReview(data <-chan models.Review, wg *sync.WaitGroup) {
 		}
 	}
 }
+
+func FindByBodyReview(keyword string) []*models.Review {
+	sqlDB, _ := database.DBConn()
+	return repository.FindByBodyReview(keyword, sqlDB)
+}

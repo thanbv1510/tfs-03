@@ -31,3 +31,8 @@ func SaveReview(data <-chan models.Review, wg *sync.WaitGroup) {
 		repository.InsertBulkReview(reviews, client.Client)
 	}
 }
+
+func FindByBodyReview(keyword string) []*models.Review {
+	client, _ := es.NewESClient(url)
+	return repository.FindByBodyReview(keyword, client.Client)
+}

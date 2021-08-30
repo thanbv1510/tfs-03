@@ -61,3 +61,28 @@ func CreateReviewTable(db *sql.DB) error {
 
 	return nil
 }
+
+func FindByBodyReview(keyword string, sqlDB *sql.DB) []*models.Review {
+	query := fmt.Sprintf("SELECT r.type, r.title, r.body FROM review r WHERE r.body LIKE '%%%s%%'", keyword)
+	fmt.Println(query)
+	ct, cancelFunc := context.WithTimeout(context.Background(), 60*time.Second)
+	defer cancelFunc()
+	result, err := sqlDB.QueryContext(ct, query)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	var reviews []*models.Review
+	for result.Next() {
+		var review models.Review
+		err := result.Scan(&review.Type, &review.Title, &review.Body)
+		if err != nil {
+			continue
+		}
+
+		reviews = append(reviews, &review)
+	}
+
+	return reviews
+}
