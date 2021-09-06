@@ -1,49 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!-- displays site properly based on user's device -->
 
-    <link rel="icon" type="image/png" sizes="32x32" href="../src/assets/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@500;700;900&display=swap"
           rel="stylesheet">
 
+    <link rel="icon" href="<%= BASE_URL %>favicon.png">
     <title>Frontend Mentor | Order summary card</title>
 
-    <!-- Feel free to remove these styles or customise in your own stylesheet 👍 -->
     <style>
-        .attribution {
-            font-family: 'Red Hat Display', sans-serif;
-            font-size: 16px;
-            text-align: center;
+        * {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            box-sizing: inherit;
         }
 
-        .attribution a {
-            color: hsl(228, 45%, 44%);
+        html {
+            font-family: 'Red Hat Display', sans-serif;
+            font-size: 62.5%;
+            text-align: center;
+            background: url("pattern-background-desktop.svg") no-repeat, hsl(225, 100%, 94%);
+            background-size: contain;
+            width: 100vw;
+            height: 100vh;
         }
     </style>
 </head>
 <body>
-<div class="attribution">
-    Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>.
-    Coded by <a href="#">Your Name Here</a>.
-
-    Order Summary
-
-    You can now listen to millions of songs, audiobooks, and podcasts on any
-    device anywhere you like!
-
-    Annual Plan
-    $59.99/year
-
-    Change
-
-    Proceed to Payment
-    Cancel Order
-
-</div>
+<noscript>
+    <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled.
+        Please enable it to continue.</strong>
+</noscript>
+<div id="app"></div>
+<!-- built files will be auto injected -->
 </body>
 </html>

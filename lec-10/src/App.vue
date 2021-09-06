@@ -1,9 +1,6 @@
 <template>
-  <div id="app">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-    <img :src="require('/src/assets/images/active-states.jpg')" alt="this is a image">
-    <img src="/lec-10/src/assets/images/active-states.jpg" alt="this is a image">
-    <OrderSummary></OrderSummary>
+  <div id="app" :style="{backgroundImage: `url${require('@/assets/images/pattern-background-desktop.svg')}`}">
+    <OrderSummary/>
   </div>
 </template>
 
@@ -13,7 +10,15 @@ import OrderSummary from './components/OrderSummary'
 export default {
   name: 'App',
   components: {
-    OrderSummary
+    OrderSummary,
   }
 }
 </script>
+
+<style scoped>
+#app {
+  font-size: 1.6rem;
+  height: 100vh;
+  width: 100vw;
+}
+</style>
