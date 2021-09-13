@@ -1,0 +1,25 @@
+version: "3.2"
+services:
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq_lec11'
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ./data/:/var/lib/rabbitmq/
+      - ./log/:/var/log/rabbitmq
+    networks:
+      - rabbitmq_go_net
+  mysql-db:
+    container_name: mysql_lec11
+    image: mysql
+    ports:
+      - "6033:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456Aa@
+      MYSQL_DATABASE: lec11
+
+networks:
+  rabbitmq_go_net:
+    driver: bridge
